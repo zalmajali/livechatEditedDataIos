@@ -180,6 +180,7 @@ export class HomePage implements OnInit {
      await this.firebaseMessaging.onMessage().subscribe(async (data:any)=>{
      })
     await this.firebaseMessaging.onBackgroundMessage().subscribe(async (data:any)=>{
+    alert(JSON.stringify(data))
       if (data.chatSessionId && data.number && data.userName) {
         const contacts = await this.functionChatGetMobileInfo(data.number);
          let fullName = contacts+' & '+data.userName;
