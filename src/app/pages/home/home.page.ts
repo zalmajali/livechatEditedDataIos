@@ -178,6 +178,7 @@ export class HomePage implements OnInit {
      let topic = this.mainUserName+this.department;
      await this.firebaseMessaging.subscribe(topic);
      await this.firebaseMessaging.onMessage().subscribe(async (data:any)=>{
+       alert(JSON.stringify(data))
      })
     await this.firebaseMessaging.onBackgroundMessage().subscribe(async (data:any)=>{
     alert(JSON.stringify(data))
