@@ -1627,66 +1627,96 @@ public fileUrl: any;
       return false;
     }
   }
-  async downloadFile(message: any) {
-    await this.platform.ready();
-    const fileUrl = message.fileUrl;
-    const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-    const folderName = 'Taqnyatlivechat';
-    const targetFolder = this.file.documentsDirectory + folderName + '/';
-    const targetPath = targetFolder + fileName;
-    try {
-      await this.file.checkDir(this.file.documentsDirectory, folderName);
-      console.log('Folder exists:', folderName);
-    } catch (err: any) {
-      if (err.code === 1 || err.code === 5) {
-        try {
-          await this.file.createDir(this.file.documentsDirectory, folderName, false);
-          console.log('Folder created:', folderName);
-        } catch (createErr) {
-          console.error('Error creating folder:', createErr);
-          const toast = await this.toastCtrl.create({
-            message: 'Cannot create folder: ' + JSON.stringify(createErr),
-            duration: 4000
-          });
-          toast.present();
-          return;
-        }
-      } else {
-        console.error('Unexpected error checking folder:', err);
+async downloadFile(message: any) {
+  await this.platform.ready();
+
+  const fileUrl = message.fileUrl;
+  const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+  const folderName = 'Taqnyatlivechat';
+  const targetFolder = this.file.documentsDirectory + folderName + '/';
+  const targetPath = targetFolder + fileName;
+
+  // التأكد من وجود المجلد
+  try {
+    await this.file.checkDir(this.file.documentsDirectory, folderName);
+    console.log('Folder exists:', folderName);
+  } catch (err: any) {
+    if (err.code === 1 || err.code === 5) {
+      try {
+        await this.file.createDir(this.file.documentsDirectory, folderName, false);
+        console.log('Folder created:', folderName);
+      } catch (createErr) {
+        console.error('Error creating folder:', createErr);
         const toast = await this.toastCtrl.create({
-          message: 'Error accessing folder: ' + JSON.stringify(err),
+          message: 'Cannot create folder: ' + JSON.stringify(createErr),
           duration: 4000
         });
         toast.present();
         return;
       }
+    } else {
+      console.error('Unexpected error checking folder:', err);
+      const toast = await this.toastCtrl.create({
+        message: 'Error accessing folder: ' + JSON.stringify(err),
+        duration: 4000
+      });
+      toast.present();
+      return;
     }
-    const fileTransfer: FileTransferObject = this.transfer.create();
-    fileTransfer.onProgress(progressEvent => {
-      if (progressEvent.lengthComputable) {
-        message.downloadProgress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
-      }
-    });
-    fileTransfer.download(fileUrl, targetPath, true).then(
-      async entry => {
-        message.downloadProgress = 100;
+  }
+
+  // إنشاء FileTransfer
+  const fileTransfer: FileTransferObject = this.transfer.create();
+
+  // تحديث progress
+  fileTransfer.onProgress(progressEvent => {
+    if (progressEvent.lengthComputable) {
+      message.downloadProgress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+    } else {
+      message.downloadProgress = 50; // تقديري إذا الطول غير معروف
+    }
+  });
+
+  // تحميل الملف
+  fileTransfer.download(fileUrl, targetPath, true).then(
+    async entry => {
+      message.downloadProgress = 100;
+      console.log('Download complete:', entry.toURL());
+
+      // نسخ الملف إلى syncedDataDirectory ليظهر في تطبيق Files
+      try {
+        await this.file.copyFile(
+          targetFolder,                 // المصدر
+          fileName,                     // اسم الملف
+          this.file.syncedDataDirectory, // الوجهة
+          fileName                       // اسم الملف النهائي
+        );
+        console.log('File copied to syncedDataDirectory.');
         const toast = await this.toastCtrl.create({
-          message: 'Download complete: ' + entry.toURL(),
+          message: 'Download & copy complete! File available in Files app.',
           duration: 3000
         });
         toast.present();
-        console.log('Download complete:', entry.toURL());
-      },
-      async error => {
-        message.downloadProgress = 0;
+
+      } catch (copyErr) {
+        console.error('Error copying to syncedDataDirectory:', copyErr);
         const toast = await this.toastCtrl.create({
-          message: 'Download error: ' + JSON.stringify(error),
+          message: 'Error copying file: ' + JSON.stringify(copyErr),
           duration: 4000
         });
         toast.present();
-        console.error('Download error:', error);
       }
-    );
-  }
-  
+
+    },
+    async error => {
+      message.downloadProgress = 0;
+      console.error('Download error:', error);
+      const toast = await this.toastCtrl.create({
+        message: 'Download error: ' + JSON.stringify(error),
+        duration: 4000
+      });
+      toast.present();
+    }
+  );
+}
 }
