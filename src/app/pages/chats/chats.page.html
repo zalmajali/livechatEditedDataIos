@@ -51,6 +51,13 @@
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 0"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 1"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 1" (click)="showImage(message.image)"></div>
+              <div *ngIf="message.showVal == 1">
+                <button (click)="downloadFile(message)" *ngIf="message.downloadProgress != 100">
+                  Download {{ message.checkAudio ? 'Audio' : 'Image' }}
+                </button>
+                <ion-progress-bar [value]="message.downloadProgress / 100" *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100"></ion-progress-bar>
+                <p *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100">{{message.downloadProgress}}%</p>
+              </div>
               <div class="timeChatFirst">{{message.date}} {{message.time}}</div>
             </div>
           </div>
@@ -59,6 +66,13 @@
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 0"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 1"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 1" (click)="showImage(message.image)"></div>
+              <div *ngIf="message.showVal == 1">
+                <button (click)="downloadFile(message)" *ngIf="message.downloadProgress != 100">
+                  Download {{ message.checkAudio ? 'Audio' : 'Image' }}
+                </button>
+                <ion-progress-bar [value]="message.downloadProgress / 100" *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100"></ion-progress-bar>
+                <p *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100">{{message.downloadProgress}}%</p>
+              </div>
               <div class="timeChatLast">{{message.date}} {{message.time}}
                 <ion-icon name="checkmark-outline" class="checkicons" *ngIf="message.msg_status == 'sent'"></ion-icon>
                 <ion-icon name="checkmark-done-outline" class="checkicons" *ngIf="message.msg_status == 'delivered'"></ion-icon>
@@ -76,6 +90,13 @@
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 0"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 1"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 1" (click)="showImage(message.image)"></div>
+              <div *ngIf="message.showVal == 1">
+                <button (click)="downloadFile(message)" *ngIf="message.downloadProgress != 100">
+                  Download {{ message.checkAudio ? 'Audio' : 'Image' }}
+                </button>
+                <ion-progress-bar [value]="message.downloadProgress / 100" *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100"></ion-progress-bar>
+                <p *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100">{{message.downloadProgress}}%</p>
+              </div>
               <div class="timeChatFirst">{{message.date}} {{message.time}}</div>
             </div>
           </div>
@@ -84,6 +105,13 @@
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 0"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 1"></div>
               <div [innerHTML]="message.msg" *ngIf="message.checkAudio == 0 && message.checkImage == 1" (click)="showImage(message.image)"></div>
+              <div *ngIf="message.showVal == 1">
+                <button (click)="downloadFile(message)" *ngIf="message.downloadProgress != 100">
+                  Download {{ message.checkAudio ? 'Audio' : 'Image' }}
+                </button>
+                <ion-progress-bar [value]="message.downloadProgress / 100" *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100"></ion-progress-bar>
+                <p *ngIf="message.downloadProgress > 0 && message.downloadProgress != 100">{{message.downloadProgress}}%</p>
+              </div>
               <div class="timeChatLast">{{message.date}} {{message.time}}
                 <ion-icon name="checkmark-outline" class="checkicons" *ngIf="message.msg_status == 'sent'"></ion-icon>
                 <ion-icon name="checkmark-done-outline" class="checkicons" *ngIf="message.msg_status == 'delivered'"></ion-icon>
