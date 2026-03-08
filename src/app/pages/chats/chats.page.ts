@@ -38,6 +38,7 @@ interface ConvertedAudio {
 })
 export class ChatsPage implements OnInit {
 @ViewChild('chatList', { read: ElementRef }) private chatList: ElementRef  | any;
+public downloadProgress = 0;
 public arrow_back:any;
 public arrow_go:any;
 public floatD:any;
@@ -129,6 +130,7 @@ public send_note_msg: any;
 public send_note_class: any;
 public showSend: any=0;
 public error_size_of_file: any;
+public fileUrl: any;
   constructor(private videoEditor: VideoEditor,private device: Device,private filePath: FilePath,private androidPermissions: AndroidPermissions,private sanitizer: DomSanitizer,private transfer: FileTransfer,private camera: Camera,private http: HttpClient,private chooser: Chooser,private popoverCtrl: PopoverController,private file: File,private activaterouter : ActivatedRoute,private databaseService: DatabaseService,private router: Router,private chatService: ChatService,private globalization: Globalization, private translate: TranslateService,private modalController: ModalController,private network:Network,private menu:MenuController,private storage: Storage,private platform: Platform,private navCtrl: NavController,private toastCtrl: ToastController,private loading: LoadingController) {
     this.platform.backButton.subscribeWithPriority(10, () => {
       this.navCtrl.navigateRoot("/home");
@@ -405,6 +407,9 @@ public error_size_of_file: any;
                 let Txt2 = "Btn";
                 let Txt3 = "BS";
                 let Txt4 = "<audio";
+                let Txt6 = "<video"; 
+                let Txt7 = "<img";
+                let Txt8 = "href=https://livechat.taqnyat.sa/";
                 let Txt5 = 'src="https://livechat.taqnyat.sa/';
                 let checkAudio = 0;
                 let checkImage = 0;
@@ -443,6 +448,15 @@ public error_size_of_file: any;
                 let msg_status = 0;
                 let session_id = chatSessionId;
                 let private_note = 0;
+                this.fileUrl = "";
+                let showVal = 0;
+                if (chatBot[j].txt.includes(Txt4) || chatBot[j].txt.includes(Txt6) || chatBot[j].txt.includes(Txt7) || chatBot[j].txt.includes(Txt8)) {
+                  this.fileUrl = await this.extractFileUrl(chatBot[j].txt);
+                  showVal = 1;
+                  const exists = await this.isFileExists(this.fileUrl);
+                  if(exists)
+                    showVal = 0;
+                }
                 ++this.counter;
                 await this.allMassegesOldVal.push({
                         msgId: msgIdid,
@@ -453,6 +467,8 @@ public error_size_of_file: any;
                         number: numberSR,
                         msgFail: msgFail,
                         msg: msg,
+                        fileUrl: this.fileUrl,
+                        showVal: showVal,
                         time: time,
                         date: date,
                         dateId: dateId,
@@ -480,7 +496,10 @@ public error_size_of_file: any;
                 let Txt = "Txt[(RT)]";
                 let Txt2 = "Btn";
                 let Txt3 = "BS";
-                let Txt4 = "<audio";
+                 let Txt4 = "<audio";
+                let Txt6 = "<video"; 
+                let Txt7 = "<img";
+                let Txt8 = "href=https://livechat.taqnyat.sa/";
                 let Txt5 = 'src="https://livechat.taqnyat.sa/';
                 let checkImage = 0;
                 let checkAudio = 0;
@@ -519,6 +538,15 @@ public error_size_of_file: any;
                 let msgFail = chat[jj].msgFail;
                 let session_id = chatSessionId;
                 let private_note = chat[jj].privateNote;
+                this.fileUrl = "";
+                let showVal = 0;
+                if (chat[jj].txt.includes(Txt4) || chat[jj].txt.includes(Txt6) || chat[jj].txt.includes(Txt7) || chat[jj].txt.includes(Txt8)) {
+                  this.fileUrl = await this.extractFileUrl(chat[jj].txt);
+                  showVal = 1;
+                  const exists = await this.isFileExists(this.fileUrl);
+                  if(exists)
+                    showVal = 0;
+                }
                 await this.allMassegesOldVal.push({
                   msgId: msgIdid,
                   checkAudio: checkAudio,
@@ -529,6 +557,8 @@ public error_size_of_file: any;
                   msgFail: msgFail,
                   msg: msg,
                   time: time,
+                  fileUrl: this.fileUrl,
+                  showVal: showVal,
                   date: date,
                   dateId: dateId,
                   from: from,
@@ -903,6 +933,9 @@ public error_size_of_file: any;
             let Txt2 = "Btn";
             let Txt3 = "BS";
             let Txt4 = "<audio";
+            let Txt6 = "<video"; 
+            let Txt7 = "<img";
+            let Txt8 = "href=https://livechat.taqnyat.sa/";
             let Txt5 = 'src="https://livechat.taqnyat.sa/';
             let checkAudio = 0;
             let checkImage = 0;
@@ -941,6 +974,15 @@ public error_size_of_file: any;
             let msg_status = 0;
             let session_id = chatSessionId;
             let private_note = 0;
+            this.fileUrl = "";
+            let showVal = 0;
+            if (chatBot[j].txt.includes(Txt4) || chatBot[j].txt.includes(Txt6) || chatBot[j].txt.includes(Txt7) || chatBot[j].txt.includes(Txt8)) {
+               this.fileUrl = await this.extractFileUrl(chatBot[j].txt);
+               showVal = 1;
+                const exists = await this.isFileExists(this.fileUrl);
+                  if(exists)
+                    showVal = 0;
+            }
             ++this.counter;
             await this.allMasseges.push({
                     msgId: msgIdid,
@@ -952,6 +994,8 @@ public error_size_of_file: any;
                     msgFail: msgFail,
                     msg: msg,
                     time: time,
+                    fileUrl: this.fileUrl,
+                    showVal: showVal,
                     date: date,
                     dateId: dateId,
                     from: from,
@@ -976,7 +1020,10 @@ public error_size_of_file: any;
             let Txt = "Txt[(RT)]";
             let Txt2 = "Btn";
             let Txt3 = "BS";
-            let Txt4 = "<audio";
+           let Txt4 = "<audio";
+            let Txt6 = "<video"; 
+            let Txt7 = "<img";
+            let Txt8 = "href=https://livechat.taqnyat.sa/";
             let Txt5 = 'src="https://livechat.taqnyat.sa/';
             let checkAudio = 0;
             let checkImage = 0;
@@ -1015,6 +1062,15 @@ public error_size_of_file: any;
             let session_id = chatSessionId;
             let private_note = chat[jj].privateNote;
             let msgFail = chat[jj].msgFail;
+             this.fileUrl = "";
+             let showVal = 0;
+            if (chat[jj].txt.includes(Txt4) || chat[jj].txt.includes(Txt6) || chat[jj].txt.includes(Txt7) || chat[jj].txt.includes(Txt8)) {
+               this.fileUrl = await this.extractFileUrl(chat[jj].txt);
+               showVal = 1;
+                const exists = await this.isFileExists(this.fileUrl);
+                  if(exists)
+                    showVal = 0;
+            }
             await this.allMasseges.push({
               msgId: msgIdid,
               checkAudio: checkAudio,
@@ -1027,6 +1083,8 @@ public error_size_of_file: any;
               time: time,
               date: date,
               dateId: dateId,
+              fileUrl: this.fileUrl,
+              showVal: showVal,
               from: from,
               filePath: filePath,
               msg_status: msg_status,
@@ -1111,6 +1169,9 @@ public error_size_of_file: any;
                   let Txt2 = "Btn";
                   let Txt3 = "BS";
                   let Txt4 = "<audio";
+                  let Txt6 = "<video"; 
+                  let Txt7 = "<img";
+                  let Txt8 = "href=https://livechat.taqnyat.sa/";
                   let Txt5 = 'src="https://livechat.taqnyat.sa/';
                   let checkAudio = 0;
                   let image = "";
@@ -1149,6 +1210,15 @@ public error_size_of_file: any;
                   let session_id = chatSessionId;
                   let private_note = chat[keyChat].privateNote;
                   let msgFail = chat[keyChat].msgFail;
+                  this.fileUrl = "";
+                  let showVal = 0;
+                  if (chat[keyChat].txt.includes(Txt4) || chat[keyChat].txt.includes(Txt6) || chat[keyChat].txt.includes(Txt7) || chat[keyChat].txt.includes(Txt8)) {
+                    this.fileUrl = await this.extractFileUrl(chat[keyChat].txt);
+                     showVal = 1;
+                    const exists = await this.isFileExists(this.fileUrl);
+                    if(exists)
+                      showVal = 0;
+                  }
                   await this.allMasseges.push({
                     msgId: msgIdid,
                     checkAudio: checkAudio,
@@ -1160,6 +1230,8 @@ public error_size_of_file: any;
                     msg: msg,
                     time: time,
                     date: date,
+                    fileUrl: this.fileUrl,
+                    showVal: showVal,
                     dateId: dateId,
                     from: from,
                     filePath: filePath,
@@ -1190,6 +1262,18 @@ public error_size_of_file: any;
     this.timeoutOne = setTimeout(() => {
       this.functionFeachDataEverySe(numberUser, chatSessionId);
     }, 1000);
+  }
+  extractFileUrl(html: string): string | null {
+    if (!html) return null;
+    const hrefMatch = html.match(/href=["']?([^"'\s>]+)/i);
+    if (hrefMatch && hrefMatch[1]) {
+      return hrefMatch[1];
+    }
+    const srcMatch = html.match(/src=["']?([^"'\s>]+)/i);
+    if (srcMatch && srcMatch[1]) {
+      return srcMatch[1];
+    }
+    return null;
   }
     parseResponse(response: string): string {
     let html = '';
@@ -1528,6 +1612,81 @@ public error_size_of_file: any;
   }
   functionCloseMenu(){
     this.modalController.dismiss({});
+  }
+  async isFileExists(fileUrl: string): Promise<boolean> {
+    await this.platform.ready();
+    const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+    const folderName = 'Taqnyatlivechat';
+    const basePath = this.file.documentsDirectory;
+    const targetFolder = basePath + folderName + '/';
+    try {
+      await this.file.createDir(basePath, folderName, true);
+      await this.file.checkFile(targetFolder, fileName);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  async downloadFile(message: any) {
+    await this.platform.ready();
+    const fileUrl = message.fileUrl;
+    const fileName = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+    const folderName = 'Taqnyatlivechat';
+    const targetFolder = this.file.documentsDirectory + folderName + '/';
+    const targetPath = targetFolder + fileName;
+    try {
+      await this.file.checkDir(this.file.documentsDirectory, folderName);
+      console.log('Folder exists:', folderName);
+    } catch (err: any) {
+      if (err.code === 1 || err.code === 5) {
+        try {
+          await this.file.createDir(this.file.documentsDirectory, folderName, false);
+          console.log('Folder created:', folderName);
+        } catch (createErr) {
+          console.error('Error creating folder:', createErr);
+          const toast = await this.toastCtrl.create({
+            message: 'Cannot create folder: ' + JSON.stringify(createErr),
+            duration: 4000
+          });
+          toast.present();
+          return;
+        }
+      } else {
+        console.error('Unexpected error checking folder:', err);
+        const toast = await this.toastCtrl.create({
+          message: 'Error accessing folder: ' + JSON.stringify(err),
+          duration: 4000
+        });
+        toast.present();
+        return;
+      }
+    }
+    const fileTransfer: FileTransferObject = this.transfer.create();
+    fileTransfer.onProgress(progressEvent => {
+      if (progressEvent.lengthComputable) {
+        message.downloadProgress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+      }
+    });
+    fileTransfer.download(fileUrl, targetPath, true).then(
+      async entry => {
+        message.downloadProgress = 100;
+        const toast = await this.toastCtrl.create({
+          message: 'Download complete: ' + entry.toURL(),
+          duration: 3000
+        });
+        toast.present();
+        console.log('Download complete:', entry.toURL());
+      },
+      async error => {
+        message.downloadProgress = 0;
+        const toast = await this.toastCtrl.create({
+          message: 'Download error: ' + JSON.stringify(error),
+          duration: 4000
+        });
+        toast.present();
+        console.error('Download error:', error);
+      }
+    );
   }
   
 }
